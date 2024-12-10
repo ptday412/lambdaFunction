@@ -72,7 +72,7 @@ def lambda_handler(event, context):
                 if item.get("name") == "text" and item.get("confidence", 0) >= 0.9:
                     print('log2 : 조건 만족')
                     # OCR API 호출 로직
-                    api_url = f"{base_url}/computervision/imageanalysis:analyze?features=read&model-version=latest&language=en&api-version=2024-02-01"
+                    api_url = f"{base_url}/computervision/imageanalysis:analyze?features=read,caption&model-version=latest&language=en&api-version=2024-02-01"
                     api_response = requests.post(api_url, headers=headers, data=image_data)
         
                     # API 응답 로깅
@@ -86,10 +86,12 @@ def lambda_handler(event, context):
                     result_list = []
                     result_list.append(api_response_data['captionResult']['text'])
 
-                    ocr = [api_response_data['readResult']['blocks']['lines']['text']] #사진의 텍스트 값
+                    #print('text =', api_response_data['readResult']['blocks']['lines']['text'])
+                    print('text =', api_response_data['readResult']['blocks'][0]['lines'][0]['text'])
+                    ocr = [api_response_data['readResult']['blocks'][0]['lines'][0]['text']] #사진의 텍스트 값
 
                     result_list.append(ocr)
-                    print('result_list: ', reuslt_list)
+                    print('result_list: ', result_list)
 
                     return {
                         'statusCode': 200,
@@ -105,7 +107,7 @@ def lambda_handler(event, context):
                     tmp_list.append(item['name'])
             
             result_list.append(tmp_list)
-            print('result_list: ', reuslt_list)
+            print('result_list: ', result_list)
 
             return {
                     'statusCode': 200,
