@@ -95,7 +95,7 @@ def lambda_handler(event, context):
             result_list = []
             for item in api_response_data['tagsResult']['values']:
                 if item['confidence'] > 0.85:
-                    result_list.add(item['name'])
+                    result_list.append(item['name'])
             print('result_list: ', result_list)
 
             return {
