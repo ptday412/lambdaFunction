@@ -78,14 +78,26 @@ def lambda_handler(event, context):
                     # API 응답 로깅
                     print(f"API Response in OCR: {api_response.status_code}")
                     print(f"API Response Body in OCR: {api_response.text}")
+                    
 
-                    # OCR API 응답을 반환한다.
+
+                    #OCR 응답 중 유의미한 부분을 리스트로 만들어 반환
+                    api_response_data = api_response.json() #json으로 처리하기 위함
+                    result = api_response_data['readResult']['blocks']['lines']['text'] #사진의 텍스트 값
+                    print('result: ',reuslt)
+
                     return {
                         'statusCode': 200,
                         'body': json.dumps('Image processed and sent to API successfully!')
                     }
 
             #text가 없다면 기존 api 응답을 반환
+            result_list = []
+            for item in api_response_data['tagsResult']['values']:
+                if item['confidence'] > 0.85:
+                    result_list.add(item['name'])
+            print('result_list: ', result_list)
+
             return {
                     'statusCode': 200,
                     'body': json.dumps('Image processed and sent to API successfully!')
